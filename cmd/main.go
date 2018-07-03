@@ -14,6 +14,7 @@ import (
 
 	"github.com/alexei-led/pumba/pkg/chaos"
 	"github.com/alexei-led/pumba/pkg/chaos/docker/cmd"
+	kubeCmd "github.com/alexei-led/pumba/pkg/chaos/kubernetes/cmd"
 	netemCmd "github.com/alexei-led/pumba/pkg/chaos/netem/cmd"
 	"github.com/alexei-led/pumba/pkg/container"
 	"github.com/alexei-led/pumba/pkg/logger"
@@ -137,6 +138,7 @@ func main() {
 				},
 			},
 		},
+		*kubeCmd.NewKubeCLICommand(topContext),
 	}
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
