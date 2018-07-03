@@ -5,6 +5,10 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/alexei-led/pumba/pkg/chaos"
 	// "github.com/alexei-led/pumba/pkg/chaos/kubernetes"
@@ -44,6 +48,23 @@ func (cmd *kubeContext) kube(c *cli.Context) error {
 	// get kubernetes context
 	// kubeContext := c.String("context")
 	// kubernetes config file
-	// kubeConfig := c.String("kubeconfig")
+	kubeconfig := c.String("kubeconfig")
+	// use the current context in kubeconfig
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		panic(err.Error())
+	}
+	// create the clientset
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err.Error())
+	}
+	// TEMP: invoke clientset
+	pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+
 	return nil
 }
