@@ -5,13 +5,15 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/alexei-led/pumba/pkg/chaos"
-	// "github.com/alexei-led/pumba/pkg/chaos/kubernetes"
+)
+
+const (
+	kubeInterfaceKey = "kube.interface"
 )
 
 type kubeContext struct {
@@ -36,15 +38,18 @@ func NewKubeCLICommand(ctx context.Context) *cli.Command {
 				Value: "~/.kube/config",
 			},
 		},
+		Subcommands: []cli.Command{
+			*NewPatchCLICommand(ctx),
+		},
 		Usage:       "chaos testing for Kubernetes",
 		ArgsUsage:   fmt.Sprintf("services/pods/deployments: name/label, list of names/labels, or RE2 regex if prefixed with %q", chaos.Re2Prefix),
 		Description: "emulate different failures and resource starvation for Kubernetes services, pods and containers",
-		Action:      cmdContext.kube,
+		Before:      cmdContext.before,
 	}
 }
 
-// Kubernetes Command
-func (cmd *kubeContext) kube(c *cli.Context) error {
+// Before any kubernetes sub-command runs
+func (cmd *kubeContext) before(c *cli.Context) error {
 	// get kubernetes context
 	// kubeContext := c.String("context")
 	// kubernetes config file
@@ -52,19 +57,15 @@ func (cmd *kubeContext) kube(c *cli.Context) error {
 	// use the current context in kubeconfig
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 	// create the clientset
-	clientset, err := kubernetes.NewForConfig(config)
+	var kubeInterface kubernetes.Interface
+	kubeInterface, err = kubernetes.NewForConfig(config)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
-	// TEMP: invoke clientset
-	pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{})
-	if err != nil {
-		panic(err.Error())
-	}
-	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
-
+	// save kubernetes Interface in App metadata
+	c.App.Metadata[kubeInterfaceKey] = kubeInterface
 	return nil
 }
