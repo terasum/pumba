@@ -127,15 +127,8 @@ func main() {
 				*netemCmd.NewLossStateCLICommand(topContext),
 				*netemCmd.NewLossGECLICommand(topContext),
 				*netemCmd.NewRateCLICommand(topContext),
-				{
-					Name:  "duplicate",
-					Usage: "TBD",
-				},
-				{
-					Name: "corrupt",
-
-					Usage: "TBD",
-				},
+				*netemCmd.NewDuplicateCLICommand(topContext),
+				*netemCmd.NewCorruptCLICommand(topContext),
 			},
 		},
 		*kubeCmd.NewKubeCLICommand(topContext),
