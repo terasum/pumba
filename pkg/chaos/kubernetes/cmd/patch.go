@@ -38,7 +38,7 @@ func (cmd *kubeContext) patch(c *cli.Context) error {
 	// get interval
 	interval := c.GlobalString("interval")
 	// get names or pattern
-	names, pattern := chaos.GetNamesOrPattern(c)
+	// names, pattern := chaos.GetNamesOrPattern(c)
 	// init patch command
 	patchCommand, err := kubernetes.NewPatchCommand(dryRun)
 	if err != nil {
