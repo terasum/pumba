@@ -46,5 +46,4 @@ func (cmd *kubeContext) patch(c *cli.Context) error {
 	}
 	// run chaos command
 	return chaos.RunChaosCommand(cmd.context, patchCommand, interval, random)
-	return nil
 }
