@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli"
 
 	"github.com/alexei-led/pumba/pkg/chaos"
-	"github.com/alexei-led/pumba/pkg/kubernetes"
+	"github.com/alexei-led/pumba/pkg/chaos/kubernetes"
 )
 
 // NewPatchCLICommand initialize patch command and bind it to the kubeContext
@@ -31,6 +31,8 @@ func NewPatchCLICommand(ctx context.Context) *cli.Command {
 
 // Patch Command
 func (cmd *kubeContext) patch(c *cli.Context) error {
+	// get random
+	random := c.GlobalBool("random")
 	// get dry-run mode
 	dryRun := c.GlobalBool("dry-run")
 	// get interval
@@ -38,11 +40,11 @@ func (cmd *kubeContext) patch(c *cli.Context) error {
 	// get names or pattern
 	names, pattern := chaos.GetNamesOrPattern(c)
 	// init patch command
-	patchCommand, err := kubernetes.NewPatchCommand(chaos.DockerClient, names, pattern, force, links, volumes, limit, dryRun)
+	patchCommand, err := kubernetes.NewPatchCommand(dryRun)
 	if err != nil {
 		return err
 	}
-	// run remove command
+	// run chaos command
 	return chaos.RunChaosCommand(cmd.context, patchCommand, interval, random)
 	return nil
 }
