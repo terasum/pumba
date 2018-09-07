@@ -3,7 +3,7 @@ version: 0.2
 env:
   parameter-store:
     GITHUB_TOKEN: PRIVATE_GITHUB_TOKEN
-    CODECOV_TOKEN: PRIVATE_CODECOV_TOKEN
+    CODECOV_TOKEN: PUMBA_CODECOV_TOKEN
 
 phases:
   install:
