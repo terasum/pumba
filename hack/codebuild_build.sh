@@ -4,6 +4,8 @@ readonly repo=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}
 readonly branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 readonly commit=$(git rev-parse --short HEAD 2>/dev/null)
 readonly version=$(cat VERSION)
+readonly build-id=${CODEBUILD_BUILD_ID}
+readonly build-url=https://$AWS_REGION.console.aws.amazon.com/codebuild/home?region=$AWS_REGION#/builds/${build-id}/view/new
 
 # Attempt to pull existing builder image
 if docker pull ${repo}:builder-${branch}; then
@@ -22,6 +24,10 @@ docker build -t ${repo}:branch --cache-from ${repo}:builder-${branch} --cache-fr
   --build-arg GH_SHA=${commit} \
   --build-arg GITHUB_TOKEN=$GITHUB_TOKEN \
   --build-arg CODECOV_TOKEN=$CODECOV_TOKEN \
+  --build-arg VCS_COMMIT_ID=${commit} \
+  --build-arg VCS_BRANCH_NAME=${branch} \
+  --build-arg CI_BUILD_ID=${build-id} \
+  --build-arg CI_BUILD_URL=${build-url} \
   -f docker/Dockerfile .
 
 docker push ${repo}:${branch}

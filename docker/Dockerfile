@@ -33,9 +33,17 @@ RUN if [[ "$RELEASE" == false ]]; then VERSION=$(cat VERSION) hack/test.sh; fi
 
 # upload coverage reports to Codecov.io: pass CODECOV_TOKEN as build-arg: skip for RELEASE
 ARG CODECOV_TOKEN
-RUN if [[ "$RELEASE" == false ]]; then bash -c "bash <(curl -s https://codecov.io/bash) -t ${CODECOV_TOKEN}"; fi
+ARG VCS_COMMIT_ID
+ENV VCS_COMMIT_ID ${VCS_COMMIT_ID}
+ARG VCS_BRANCH_NAME
+ENV VCS_BRANCH_NAME ${VCS_BRANCH_NAME}
+ARG CI_BUILD_ID
+ENV CI_BUILD_ID ${CI_BUILD_ID}
+ARG CI_BUILD_URL
+ENV CI_BUILDURL ${CI_BUILD_URL}
+RUN if [[ "$RELEASE" == false ]]; then bash -c "bash <(curl -s https://codecov.io/bash) -t ${CODECOV_TOKEN} -e VCS_COMMIT_ID,VCS_BRANCH_NAME,CI_BUILD_ID,CI_BUILD_URL"; fi
 
-# build pumba binary for amd64 linux
+# bild pumba binary for amd64 linux
 RUN VERSION=$(cat VERSION) hack/build.sh
 
 # build pumba for all platforms
