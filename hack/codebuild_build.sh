@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 readonly repo=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}
 readonly branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
