@@ -1,6 +1,8 @@
 version: 0.2
 
 env:
+  variables:
+    REPO_NAME: pumba
   parameter-store:
     GITHUB_TOKEN: PRIVATE_GITHUB_TOKEN
     CODECOV_TOKEN: PUMBA_CODECOV_TOKEN
