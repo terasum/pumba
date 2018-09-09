@@ -8,10 +8,10 @@ readonly version=$(cat VERSION)
 # Attempt to pull existing builder image
 if docker pull ${repo}:builder-branch; then
     # Update builder image
-    docker build -t ${repo}:builder-branch --target builder --cache-from ${repo}:builder-branch .
+    docker build -t ${repo}:builder-branch --target builder --cache-from ${repo}:builder-branch -f docker/Dockerfile .
 else
     # Create new builder image
-    docker build -t ${repo}:builder-branch --target builder .
+    docker build -t ${repo}:builder-branch --target builder -f docker/Dockerfile .
 fi
 
 # Attempt to pull latest branch target image
