@@ -1,12 +1,19 @@
 #!/bin/sh
 
+CODEBUILD_GIT_BRANCH="$(git symbolic-ref HEAD --short 2>/dev/null)"
+if [ "$CODEBUILD_GIT_BRANCH" = "" ] ; then
+  CODEBUILD_GIT_BRANCH="$(git branch -a --contains HEAD | sed -n 2p | awk '{ printf $1 }')";
+  export CODEBUILD_GIT_BRANCH=${CODEBUILD_GIT_BRANCH#remotes/origin/};
+fi
+
 readonly account=$(aws sts get-caller-identity --query 'Account' --output text)
 readonly repo=${account}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}
-readonly branch=$(git symbolic-ref HEAD --short 2>/dev/null)
+readonly branch=${CODEBUILD_GIT_BRANCH}
 readonly commit=${CODEBUILD_SOURCE_VERSION}
 readonly version=$(cat VERSION)
 readonly build_id=${CODEBUILD_BUILD_ID}
 readonly build_url=https://$AWS_REGION.console.aws.amazon.com/codebuild/home?region=$AWS_REGION#/builds/${build_id}/view/new
+
 
 echo "current branch:commit = ${branch}:${commit}"
 
