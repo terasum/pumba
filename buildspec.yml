@@ -17,7 +17,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Pumba Docker image...
-      - ./hack/codefresh_build.sh
+      - ./hack/codebuild_build.sh
   post_build:
     commands:
       - echo Build completed on `date`
