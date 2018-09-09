@@ -2,10 +2,12 @@
 
 readonly repo=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}
 readonly branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-readonly commit=$(git rev-parse --short HEAD 2>/dev/null)
+readonly commit=${CODEBUILD_SOURCE_VERSION}
 readonly version=$(cat VERSION)
 readonly build_id=${CODEBUILD_BUILD_ID}
 readonly build_url=https://$AWS_REGION.console.aws.amazon.com/codebuild/home?region=$AWS_REGION#/builds/${build_id}/view/new
+
+echo "current branch:commit = ${branch}:${commit}"
 
 # Attempt to pull existing builder image
 if docker pull ${repo}:builder-${branch}; then
