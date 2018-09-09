@@ -21,7 +21,7 @@ docker pull ${repo}:branch || true
 docker build -t ${repo}:branch --cache-from ${repo}:builder-branch --cache-from ${repo}:branch \
   --build-arg GH_SHA=${commit} \
   --build-arg GITHUB_TOKEN=$GITHUB_TOKEN \
-  --build-arg CODECOV_TOKEN=$CODECOV_TOKEN
+  --build-arg CODECOV_TOKEN=$CODECOV_TOKEN \
   -f docker/Dockerfile .
 
 docker push ${repo}:branch
