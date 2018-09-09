@@ -1,11 +1,11 @@
 #!/bin/sh
 
 readonly repo=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}
-readonly branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+readonly branch=${CODEBUILD_GIT_BRANCH}
 readonly commit=${CODEBUILD_SOURCE_VERSION}
 readonly version=$(cat VERSION)
 readonly build_id=${CODEBUILD_BUILD_ID}
-readonly build_url=https://$AWS_REGION.console.aws.amazon.com/codebuild/home?region=$AWS_REGION#/builds/${build_id}/view/new
+readonly build_url=${CODEBUILD_BUILD_URL}
 
 echo "current branch:commit = ${branch}:${commit}"
 
