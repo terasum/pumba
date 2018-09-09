@@ -8,9 +8,6 @@ env:
     CODECOV_TOKEN: PUMBA_CODECOV_TOKEN
 
 phases:
-  install:
-    commands:
-      - apk add --no-cache git
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
